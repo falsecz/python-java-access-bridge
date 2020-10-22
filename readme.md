@@ -10,4 +10,4 @@ python fh.py
 asi je potreba doinstalovat pres pip, tak 2-3 zavislosti, podle toho na cem to spadne
 
 
-fh.py inicializuje JABHandler, vytvori se wx.App a pripravi se pumpa na udalosti kterej vybira frontu z JABHandleru a odbavuje na jinym threadu (viz. mujeventhandler.py)
+fh.py inicializuje JABHandler, vytvori se wx.App a pripravi se pumpa na udalosti ktera vybira frontu z JABHandleru a odbavuje na jinym threadu (viz. mujeventhandler.py)
