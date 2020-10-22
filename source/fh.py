@@ -1,13 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from jnius import autoclass
-autoclass('java.lang.System').out.println('Hello world')
-
-# from py4j.java_gateway import JavaGateway
-# gateway = JavaGateway()                        # connect to the JVM
-
-# hostid = gateway.jvm.sun.jvmstat.monitor.HostIdentifier(None)
-# java_object = gateway.jvm.sun.jvmstat.monitor.MonitoredHost(hostid)  # invoke constructor
  
 
 import sys
