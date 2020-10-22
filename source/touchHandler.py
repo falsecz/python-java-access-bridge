@@ -8,6 +8,11 @@ Used to provide input gestures for touchscreens, touch modes and other support f
 In order to use touch features, NVDA must be installed on a touchscreen computer running Windows 8 and later.
 """
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 import threading
 from ctypes import *
 from ctypes.wintypes import *

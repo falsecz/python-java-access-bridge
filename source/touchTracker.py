@@ -4,10 +4,16 @@
 #See the file COPYING for more details.
 #Copyright (C) 2012 NV Access Limited
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 import threading
 import time
 from collections import OrderedDict
 from logHandler import log
+
 
 #Possible actions (single trackers)
 action_tap="tap"

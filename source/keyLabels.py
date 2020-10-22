@@ -3,6 +3,11 @@
 #This file is covered by the GNU General Public License.
 #See the file COPYING for more details.
 #Copyright (C) 2008-2016 NV Access Limited, Aleksey Sadovoy, Babbage B.v.
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 
 localizedKeyLabels = {
 	# Translators: This is the name of the back key found on multimedia keyboards for controlling the web-browser.

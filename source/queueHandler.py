@@ -6,8 +6,8 @@
 
 import types
 from queue import SimpleQueue
-import globalVars
-from logHandler import log
+# import globalVars
+# from logHandler import log
 import watchdog
 import core
 
@@ -53,8 +53,9 @@ def flushQueue(queue):
 			watchdog.alive()
 			try:
 				func(*args,**kwargs)
-			except:
-				log.exception(f"Error in func {func.__qualname__}")
+			except Exception as e:
+				# raise
+				print(f"Error in func {func.__qualname__}", e)
 
 def isPendingItems(queue):
 	if not queue.empty():

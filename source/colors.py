@@ -10,6 +10,11 @@ import colorsys
 from ctypes.wintypes import COLORREF
 import re
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 class RGB(namedtuple('RGB',('red','green','blue'))):
 	"""Represents a color as an RGB (red green blue) value"""
 

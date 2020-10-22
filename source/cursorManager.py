@@ -9,6 +9,11 @@ Implementation of cursor managers.
 A cursor manager provides caret navigation and selection commands for a virtual text range.
 """
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 import wx
 import core
 import baseObject

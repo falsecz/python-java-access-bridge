@@ -8,6 +8,11 @@ import itertools
 import re
 from typing import Tuple, Union, Dict
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 import wx
 from wx.lib.mixins.treemixin import VirtualTree
 import wx.lib.newevent

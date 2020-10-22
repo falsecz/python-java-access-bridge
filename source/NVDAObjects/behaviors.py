@@ -9,6 +9,11 @@
 Behaviors described in this mix-in include providing table navigation commands for certain table rows, terminal input and output support, announcing notifications and suggestion items and so on.
 """
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 import os
 import time
 import threading

@@ -11,7 +11,7 @@ from typing import Optional, Tuple, Any, Union, Callable
 from logHandler import log
 from comtypes.automation import S_OK, VARIANT, POINTER, c_int, c_double, _oleaut32
 from comtypes import COMObject, GUID
-from comInterfaces.Accessibility import IAccPropServer, ANNO_CONTAINER, ANNO_THIS
+# from comInterfaces.Accessibility import IAccPropServer, ANNO_CONTAINER, ANNO_THIS
 from abc import ABCMeta, abstractmethod
 import weakref
 import winUser
@@ -42,7 +42,7 @@ class IAccPropServer_Impl(COMObject, metaclass=ABCMeta):
 	"""
 
 	_com_interfaces_ = [
-		IAccPropServer
+		# IAccPropServer
 	]
 
 	# Constants used with `IAccPropServer::GetPropValue` method see

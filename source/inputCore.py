@@ -10,6 +10,11 @@ The singleton L{InputManager} (L{manager}) manages functionality related to inpu
 For example, it is used to execute gestures and handle input help.
 """
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 import sys
 import os
 import itertools

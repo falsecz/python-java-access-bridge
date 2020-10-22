@@ -7,4 +7,4 @@
 import os
 import globalVars
 
-speechDictsPath=os.path.join(globalVars.appArgs.configPath, "speechDicts")
+speechDictsPath=os.path.join("/", "speechDicts")

@@ -11,6 +11,11 @@ import winsound
 import time
 import weakref
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 import wx
 import core
 from logHandler import log

@@ -20,6 +20,11 @@ import controlTypes
 from controlTypes import OutputReason
 import locationHelper
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 
 SpeechSequence = List[Union[Any, str]]
 

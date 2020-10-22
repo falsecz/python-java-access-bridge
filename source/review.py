@@ -14,6 +14,11 @@ from displayModel import DisplayModelTextInfo
 import textInfos
 import config
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 def getObjectPosition(obj):
 	"""
 	Fetches a TextInfo instance suitable for reviewing the text in  the given object.

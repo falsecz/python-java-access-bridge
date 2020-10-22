@@ -11,6 +11,11 @@ import time
 import config
 from logHandler import log
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 def _isDebug():
 	return config.conf["debugLog"]["audioDucking"]
 

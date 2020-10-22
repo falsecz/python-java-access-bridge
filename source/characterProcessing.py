@@ -13,6 +13,11 @@ from logHandler import log
 import globalVars
 import config
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 class LocaleDataMap(object):
 	"""Allows access to locale-specific data objects, dynamically loading them if needed on request"""
 

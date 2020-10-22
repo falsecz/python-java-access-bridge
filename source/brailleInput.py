@@ -9,7 +9,7 @@ import os.path
 import time
 from typing import Optional, List, Set
 
-import louis
+# import louis
 import brailleTables
 import braille
 import config

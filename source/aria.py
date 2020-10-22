@@ -7,6 +7,11 @@ from typing import Dict
 from enum import IntEnum
 import controlTypes
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 ariaRolesToNVDARoles: Dict[str, int] = {
 	"description": controlTypes.ROLE_STATICTEXT,  # Not in ARIA 1.1 spec
 	"alert":controlTypes.ROLE_ALERT,

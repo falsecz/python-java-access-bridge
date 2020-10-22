@@ -11,6 +11,11 @@ import collections
 from locale import strxfrm
 import globalVars
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 
 #: The directory in which liblouis braille tables are located.
 TABLES_DIR = os.path.join(globalVars.appDir, "louis", "tables")

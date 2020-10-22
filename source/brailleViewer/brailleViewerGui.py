@@ -10,6 +10,12 @@ import config
 from logHandler import log
 import fonts
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
+
 BRAILLE_UNICODE_PATTERNS_START = 0x2800
 BRAILLE_SPACE_CHARACTER = chr(BRAILLE_UNICODE_PATTERNS_START)
 BRAILLE_INIT_CHARACTER = BRAILLE_SPACE_CHARACTER

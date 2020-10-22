@@ -16,11 +16,11 @@ import msvcrt
 import comtypes
 import winUser
 import winKernel
-from logHandler import log
-import globalVars
+# from logHandler import log
+# import globalVars
 import core
 from core import CallCancelled
-import NVDAHelper
+# import NVDAHelper
 
 #settings
 #: The minimum time to wait for the core to be alive.

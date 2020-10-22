@@ -5,6 +5,11 @@
 #This file is covered by the GNU General Public License.
 #See the file COPYING for more details.
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 import time
 import os
 import sys

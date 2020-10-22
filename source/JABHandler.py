@@ -1,9 +1,13 @@
+
+
 # -*- coding: UTF-8 -*-
 # A part of NonVisual Desktop Access (NVDA)
 # Copyright (C) 2007-2019 NV Access Limited, Peter Vágner, Renaud Paquay, Babbage B.V.
 # This file is covered by the GNU General Public License.
 # See the file COPYING for more details.
-
+# from source.eventHandler import queueEvent
+import globalVars
+import mojepumpa
 import os
 import queue
 from ctypes import (
@@ -30,17 +34,23 @@ from ctypes import (
 from ctypes.wintypes import BOOL, HWND, WCHAR
 import time
 import queueHandler
-from logHandler import log
+# from logHandler import log
 import winUser
-import api
-import eventHandler
-import controlTypes
-import NVDAObjects.JAB
+	
+	# print(a) 
+	# print(a) 
+# import api
+# import eventHandler
+import mujeventhandler as eventHandler
+# import controlTypes
+# import NVDAObjects.JAB
 import core
-import textUtils
-import NVDAHelper
-import config
-import globalVars
+# import textUtils
+# import NVDAHelper
+# import config
+# import globalVars
+
+
 
 #: The path to the user's .accessibility.properties file, used
 #: to enable JAB.
@@ -62,7 +72,7 @@ def _fixBridgeFunc(restype,name,*argtypes,**kwargs):
 	try:
 		func=getattr(bridgeDll,name)
 	except AttributeError:
-		log.warning("%s not found in Java Access Bridge dll"%name)
+		print("%s not found in Java Access Bridge dll"%name)
 		return
 	func.restype=restype
 	func.argtypes=argtypes
@@ -332,8 +342,10 @@ internalFunctionQueue=queue.Queue(1000)
 internalFunctionQueue.__name__="JABHandler.internalFunctionQueue"
 
 def internalQueueFunction(func,*args,**kwargs):
+	# print("putuju")
 	internalFunctionQueue.put_nowait((func,args,kwargs))
-	core.requestPump()
+	# core.requestPump()
+	mojepumpa.requestPump()
 
 def internal_getWindowHandleFromAccContext(vmID,accContext):
 	try:
@@ -347,6 +359,7 @@ def internal_getWindowHandleFromAccContext(vmID,accContext):
 
 def getWindowHandleFromAccContext(vmID,accContext):
 	hwnd=internal_getWindowHandleFromAccContext(vmID,accContext)
+	# print("ssss", hwnd)
 	if hwnd:
 		vmIDsToWindowHandles[vmID]=hwnd
 		return hwnd
@@ -364,7 +377,10 @@ class JABContext(object):
 			vmID=vmID.value
 			vmIDsToWindowHandles[vmID]=hwnd
 		elif vmID and not hwnd:
+			# print("Hhhh")
 			hwnd = getWindowHandleFromAccContext(vmID,accContext)
+			# print("Hhhhmamamam")
+			# print(hwnd)
 		self.hwnd=hwnd
 		self.vmID=vmID
 		self.accContext=accContext
@@ -374,7 +390,7 @@ class JABContext(object):
 			try:
 				bridgeDll.releaseJavaObject(self.vmID,self.accContext)
 			except:
-				log.debugWarning("Error releasing java object",exc_info=True)
+				print("Error releasing java object")
 
 
 	def __eq__(self,jabContext):
@@ -433,14 +449,14 @@ class JABContext(object):
 
 	def getAccessibleTextLineBounds(self,index):
 		index=max(index,0)
-		log.debug("lineBounds: index %s"%index)
+		print("lineBounds: index %s"%index)
 		#Java returns end as the last character, not end as past the last character
 		startIndex=c_int()
 		endIndex=c_int()
 		bridgeDll.getAccessibleTextLineBounds(self.vmID,self.accContext,index,byref(startIndex),byref(endIndex))
 		start=startIndex.value
 		end=endIndex.value
-		log.debug("line bounds: start %s, end %s"%(start,end))
+		print("line bounds: start %s, end %s"%(start,end))
 		if end<start or start<0:
 			# Invalid or empty line.
 			return (0,-1)
@@ -451,7 +467,7 @@ class JABContext(object):
 			bridgeDll.getAccessibleTextLineBounds(self.vmID,self.accContext,end,byref(startIndex),byref(endIndex))
 			tempStart=max(startIndex.value,0)
 			tempEnd=max(endIndex.value,0)
-			log.debug("line bounds: tempStart %s, tempEnd %s"%(tempStart,tempEnd))
+			print("line bounds: tempStart %s, tempEnd %s"%(tempStart,tempEnd))
 			if tempStart>(index+1):
 				# This line starts after the requested index, so set end to point at the line before.
 				end=tempStart-1
@@ -463,13 +479,13 @@ class JABContext(object):
 			bridgeDll.getAccessibleTextLineBounds(self.vmID,self.accContext,start,byref(startIndex),byref(endIndex))
 			tempStart=max(startIndex.value,0)
 			tempEnd=max(endIndex.value,0)
-			log.debug("line bounds: tempStart %s, tempEnd %s"%(tempStart,tempEnd))
+			print("line bounds: tempStart %s, tempEnd %s"%(tempStart,tempEnd))
 			if tempEnd<(index-1):
 				# This line ends before the requested index, so set start to point at the line after.
 				start=tempEnd+1
 			else:
 				ok=True
-		log.debug("line bounds: returning %s, %s"%(start,end))
+		print("line bounds: returning %s, %s"%(start,end))
 		return (start,end)
 
 
@@ -613,20 +629,23 @@ class JABContext(object):
 
 @AccessBridge_FocusGainedFP
 def internal_event_focusGained(vmID, event,source):
+	# print("internal_event_focusGained vmID", vmID, event, source)
 	hwnd=getWindowHandleFromAccContext(vmID,source)
 	internalQueueFunction(event_gainFocus,vmID,source,hwnd)
 	bridgeDll.releaseJavaObject(vmID,event)
 
 def event_gainFocus(vmID,accContext,hwnd):
+	# print("FFFF")
 	jabContext=JABContext(hwnd=hwnd,vmID=vmID,accContext=accContext)
-	if not winUser.isDescendantWindow(winUser.getForegroundWindow(),jabContext.hwnd):
-		return
-	focus=eventHandler.lastQueuedFocusObject
-	if (isinstance(focus,NVDAObjects.JAB.JAB) and focus.jabContext==jabContext):
-		return 
-	obj=NVDAObjects.JAB.JAB(jabContext=jabContext)
-	if obj.role==controlTypes.ROLE_UNKNOWN:
-		return
+	obj = jabContext
+	# if not winUser.isDescendantWindow(winUser.getForegroundWindow(),jabContext.hwnd):
+	# 	return
+	# focus=eventHandler.lastQueuedFocusObject
+	# if (isinstance(focus,NVDAObjects.JAB.JAB) and focus.jabContext==jabContext):
+	# 	return 
+	# obj=NVDAObjects.JAB.JAB(jabContext=jabContext)
+	# if obj.role==controlTypes.ROLE_UNKNOWN:
+	# 	return
 	eventHandler.queueEvent("gainFocus",obj)
 
 @AccessBridge_PropertyActiveDescendentChangeFP
@@ -653,11 +672,12 @@ def internal_hasFocus(sourceContext):
 @AccessBridge_PropertyNameChangeFP
 def event_nameChange(vmID,event,source,oldVal,newVal):
 	jabContext=JABContext(vmID=vmID,accContext=source)
-	focus=api.getFocusObject()
-	if isinstance(focus, NVDAObjects.JAB.JAB) and focus.jabContext == jabContext:
-		obj = focus
-	else:
-		obj = NVDAObjects.JAB.JAB(jabContext=jabContext)
+	obj = jabContext
+	# focus=api.getFocusObject()
+	# if isinstance(focus, NVDAObjects.JAB.JAB) and focus.jabContext == jabContext:
+	# 	obj = focus
+	# else:
+	# 	obj = NVDAObjects.JAB.JAB(jabContext=jabContext)
 	if obj:
 		eventHandler.queueEvent("nameChange", obj)
 	bridgeDll.releaseJavaObject(vmID,event)
@@ -674,15 +694,27 @@ def event_descriptionChange(vmID,event,source,oldVal,newVal):
 		eventHandler.queueEvent("descriptionChange", obj)
 	bridgeDll.releaseJavaObject(vmID,event)
 
+
+def getFocusObject():
+	"""
+Gets the current object with focus.
+@returns: the object with focus
+@rtype: L{NVDAObjects.NVDAObject}
+"""
+	return globalVars.focusObject
+
+
 @AccessBridge_PropertyValueChangeFP
 def event_valueChange(vmID,event,source,oldVal,newVal):
 	jabContext=JABContext(vmID=vmID,accContext=source)
-	focus=api.getFocusObject()
-	if isinstance(focus, NVDAObjects.JAB.JAB) and focus.jabContext == jabContext:
-		obj = focus
-	else:
-		obj = NVDAObjects.JAB.JAB(jabContext=jabContext)
+	focus=getFocusObject()
+	obj = jabContext
+	# if isinstance(focus, NVDAObjects.JAB.JAB) and focus.jabContext == jabContext:
+	# 	obj = focus
+	# else:
+	# 	obj = NVDAObjects.JAB.JAB(jabContext=jabContext)
 	if obj:
+		pumpAll()
 		eventHandler.queueEvent("valueChange", obj)
 	bridgeDll.releaseJavaObject(vmID,event)
 
@@ -693,22 +725,23 @@ def internal_event_stateChange(vmID,event,source,oldState,newState):
 
 def event_stateChange(vmID,accContext,oldState,newState):
 	jabContext=JABContext(vmID=vmID,accContext=accContext)
-	focus=api.getFocusObject()
+	# focus=api.getFocusObject()
 	#For broken tabs and menus, we need to watch for things being selected and pretend its a focus change
-	stateList=newState.split(',')
-	if "focused" in stateList or "selected" in stateList:
-		obj=NVDAObjects.JAB.JAB(jabContext=jabContext)
-		if not obj:
-			return
-		if focus!=obj and eventHandler.lastQueuedFocusObject!=obj and obj.role in (controlTypes.ROLE_MENUITEM,controlTypes.ROLE_TAB,controlTypes.ROLE_MENU):
-			eventHandler.queueEvent("gainFocus",obj)
-			return
-	if isinstance(focus,NVDAObjects.JAB.JAB) and focus.jabContext==jabContext:
-		obj=focus
-	else:
-		obj=NVDAObjects.JAB.JAB(jabContext=jabContext)
-		if not obj:
-			return
+	# stateList=newState.split(',')
+	# if "focused" in stateList or "selected" in stateList:
+	# 	obj=NVDAObjects.JAB.JAB(jabContext=jabContext)
+	# 	if not obj:
+	# 		return
+	# 	if focus!=obj and eventHandler.lastQueuedFocusObject!=obj and obj.role in (controlTypes.ROLE_MENUITEM,controlTypes.ROLE_TAB,controlTypes.ROLE_MENU):
+	# 		eventHandler.queueEvent("gainFocus",obj)
+	# 		return
+	# if isinstance(focus,NVDAObjects.JAB.JAB) and focus.jabContext==jabContext:
+	# 	obj=focus
+	# else:
+	# 	obj=NVDAObjects.JAB.JAB(jabContext=jabContext)
+	# 	if not obj:
+	# 		return
+	obj = jabContext
 	eventHandler.queueEvent("stateChange",obj)
 
 @AccessBridge_PropertyCaretChangeFP
@@ -722,19 +755,22 @@ def internal_event_caretChange(vmID, event,source,oldPos,newPos):
 
 def event_caret(vmID, accContext, hwnd):
 	jabContext = JABContext(hwnd=hwnd, vmID=vmID, accContext=accContext)
-	focus = api.getFocusObject()
-	if isinstance(focus, NVDAObjects.JAB.JAB) and focus.jabContext == jabContext:
-		obj = focus
-	else:
-		obj = NVDAObjects.JAB.JAB(jabContext=jabContext)
-		if not obj:
-			return
+	obj = jabContext
+	# focus = api.getFocusObject()
+	# if isinstance(focus, NVDAObjects.JAB.JAB) and focus.jabContext == jabContext:
+	# 	obj = focus
+	# else:
+	# 	obj = NVDAObjects.JAB.JAB(jabContext=jabContext)
+	# 	if not obj:
+	# 		return
 	eventHandler.queueEvent("caret", obj)
 
 def event_enterJavaWindow(hwnd):
+
 	internalQueueFunction(enterJavaWindow_helper,hwnd)
 
 def enterJavaWindow_helper(hwnd):
+	print("enterrr")
 	vmID=c_long()
 	accContext=JOBJECT64()
 	timeout=time.time()+0.2
@@ -776,22 +812,24 @@ def enableBridge():
 	try:
 		props = open(A11Y_PROPS_PATH, "wt")
 		props.write(A11Y_PROPS_CONTENT)
-		log.info("Enabled Java Access Bridge for user")
+		print("Enabled Java Access Bridge for user")
 	except OSError:
-		log.warning("Couldn't enable Java Access Bridge for user", exc_info=True)
+		print("Couldn't enable Java Access Bridge for user")
 
 
 def initialize():
 	global bridgeDll, isRunning
-	try:
-		bridgeDll = cdll.LoadLibrary(
-			os.path.join(NVDAHelper.versionedLibPath, "windowsaccessbridge-32.dll"))
-	except WindowsError:
-		raise NotImplementedError("dll not available")
+	# try:
+	bridgeDll = cdll.LoadLibrary(os.path.join("z:\\bender\\Develop\\sbks\\nvda\\include\\javaAccessBridge32\\windowsaccessbridge-32.dll"))
+			# os.path.join(NVDAHelper.versionedLibPath, "windowsaccessbridge-32.dll"))
+	# except WindowsError:
+	# raise NotImplementedError("dll not available")
 	_fixBridgeFuncs()
 	if (
-		not globalVars.appArgs.secure and config.isInstalledCopy()
-		and not isBridgeEnabled()
+		# not globalVars.appArgs.secure and config.isInstalledCopy()
+		#and 
+		# not isBridgeEnabled()
+		True
 	):
 		enableBridge()
 	# Accept wm_copydata and any wm_user messages from other processes even if running with higher privileges
@@ -810,6 +848,8 @@ def initialize():
 	bridgeDll.setPropertyStateChangeFP(internal_event_stateChange)
 	bridgeDll.setPropertyCaretChangeFP(internal_event_caretChange)
 	isRunning=True
+	print("jezdim")
+
 
 def pumpAll():
 	if isRunning: 

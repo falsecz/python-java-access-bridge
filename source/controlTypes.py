@@ -203,6 +203,11 @@ STATE_CROPPED=0x8000000000
 STATE_OVERFLOWING=0x10000000000
 STATE_UNLOCKED=0x20000000000
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 roleLabels: Dict[int, str] = {
 	# Translators: The word for an unknown control type.
 	ROLE_UNKNOWN:_("unknown"),

@@ -8,6 +8,11 @@
 import logging
 from abc import ABCMeta
 import copy
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 
 import wx
 from vision.providerBase import VisionEnhancementProviderSettings
@@ -3827,8 +3832,8 @@ class NVDASettingsDialog(MultiCategorySettingsDialog):
 	if winVersion.isUwpOcrAvailable():
 		categoryClasses.append(UwpOcrPanel)
 	# And finally the Advanced panel which should always be last.
-	if not globalVars.appArgs.secure:
-		categoryClasses.append(AdvancedPanel)
+	# if not globalVars.appArgs.secure:
+	# 	categoryClasses.append(AdvancedPanel)
 
 	def makeSettings(self, settingsSizer):
 		# Ensure that after the settings dialog is created the name is set correctly

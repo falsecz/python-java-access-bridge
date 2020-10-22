@@ -9,6 +9,10 @@ import itertools
 import os
 from typing import Iterable, Union, Tuple, List, Optional
 from locale import strxfrm
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
 
 import driverHandler
 import pkgutil
@@ -18,7 +22,7 @@ import threading
 import time
 import wx
 import louisHelper
-import louis
+# import louis
 import gui
 import winKernel
 import keyboardHandler

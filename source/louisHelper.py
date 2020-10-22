@@ -6,20 +6,20 @@
 
 """Helper module to ease communication to and from liblouis."""
 
-import louis
+# import louis
 from logHandler import log
 import config
 
 LOUIS_TO_NVDA_LOG_LEVELS = {
-	louis.LOG_ALL: log.DEBUG,
-	louis.LOG_DEBUG: log.DEBUG,
-	louis.LOG_INFO: log.INFO,
-	louis.LOG_WARN: log.WARNING,
-	louis.LOG_ERROR: log.ERROR,
-	louis.LOG_FATAL: log.ERROR,
+	# louis.LOG_ALL: log.DEBUG,
+	# louis.LOG_DEBUG: log.DEBUG,
+	# louis.LOG_INFO: log.INFO,
+	# louis.LOG_WARN: log.WARNING,
+	# louis.LOG_ERROR: log.ERROR,
+	# louis.LOG_FATAL: log.ERROR,
 }
 
-@louis.LogCallback
+# @louis.LogCallback
 def louis_log(level, message):
 	if not _isDebug():
 		return

@@ -11,6 +11,11 @@ import speech
 import ui
 import controlTypes
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
 class TextContainerObject(AutoPropertyObject):
 	"""
 	An object that contains text which can be accessed via a call to a makeTextInfo method.

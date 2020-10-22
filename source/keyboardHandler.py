@@ -7,6 +7,12 @@
 
 """Keyboard support"""
 
+def _(a): 
+	return a
+def pgettext(a, b=None): 
+	return a
+
+
 import ctypes
 import sys
 import time
